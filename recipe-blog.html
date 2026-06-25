@@ -477,7 +477,7 @@ button:hover .sprig { opacity: 0.6; }
       <path d="M42 45 C46 48 49 50 51 49" stroke="#8FA888" stroke-width="1" stroke-linecap="round" fill="none"/>
     </svg>
     </button>
-    <span class="site-name">From the kitchen</span>
+    <span class="site-name">Chorus Frog Farm</span>
   </header>
 
   <!-- Password prompt -->
@@ -538,10 +538,10 @@ button:hover .sprig { opacity: 0.6; }
   <!-- Community recipe submission -->
   <section class="submit-section">
     <hr class="rule">
-    <button class="submit-toggle" id="submitToggle" onclick="toggleSubmit()">+ share a recipe with us</button>
+    <button class="submit-toggle" id="submitToggle" onclick="toggleSubmit()">+ share a harvest recipe</button>
     <div class="submit-form" id="submitForm">
-      <h2 class="submit-heading">Share a recipe</h2>
-      <p class="submit-subhead">We'd love to cook something you love. Fill this in and we'll keep it on file.</p>
+      <h2 class="submit-heading">Share a harvest recipe</h2>
+      <p class="submit-subhead">Got a recipe that makes the most of what's in season? Share it and we may cook it for the farm.</p>
       <div class="form-field">
         <label>Your name</label>
         <input type="text" id="s-name" placeholder="e.g. Maria">
@@ -736,7 +736,7 @@ function toggleSubmit() {
   const f = document.getElementById('submitForm');
   f.classList.toggle('open');
   document.getElementById('submitToggle').textContent =
-    f.classList.contains('open') ? '— never mind' : '+ share a recipe with us';
+    f.classList.contains('open') ? '— never mind' : '+ share a harvest recipe';
 }
 
 function submitRecipe() {
