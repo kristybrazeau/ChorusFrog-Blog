@@ -10,21 +10,21 @@
 
 :root {
   --linen:   #FAF7F2;
-  --ink:     #2C3A2E;
-  --ink-mid: #4A5C4C;
-  --ink-dim: #8A9E8C;
+  --ink:     #1a2e1c;
+  --ink-mid: #2e4430;
+  --ink-dim: #5a7a5c;
   --sage:    #8FA888;
   --wheat:   #C9A96E;
-  --rule:    rgba(44,58,46,0.12);
+  --rule:    rgba(26,46,28,0.18);
 }
 
-html { font-size: 16px; }
+html { font-size: 18px; }
 
 body {
   background: var(--linen);
   color: var(--ink);
   font-family: 'Inter', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
@@ -81,7 +81,7 @@ body {
 .slot-header { margin-bottom: 1.5rem; }
 
 .slot-time-label {
-  font-size: 0.62rem;
+  font-size: 0.74rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--wheat);
@@ -91,20 +91,20 @@ body {
 .slot-name {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: 1.65rem;
+  font-size: 1.9rem;
   color: var(--ink);
   line-height: 1.15;
 }
 
 .slot-time {
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   color: var(--ink-dim);
   margin-top: 2px;
   letter-spacing: 0.04em;
 }
 
 .slot-count {
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   letter-spacing: 0.1em;
   color: var(--sage);
   margin-top: 6px;
@@ -133,7 +133,7 @@ hr.slot-rule {
   border: none;
   font-family: 'Inter', sans-serif;
   font-weight: 300;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--ink);
   padding: 6px 0 8px;
   outline: none;
@@ -146,7 +146,7 @@ hr.slot-rule {
   background: none;
   border: none;
   font-family: 'Inter', sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--sage);
@@ -172,14 +172,14 @@ hr.slot-rule {
 
 .name-num {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--ink-dim);
   min-width: 1.4em;
 }
 
 .name-text {
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--ink-mid);
 }
 
@@ -201,7 +201,7 @@ hr.slot-rule {
 .empty-slot {
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   color: var(--ink-dim);
   padding: 0.6rem 0;
 }
@@ -222,7 +222,7 @@ hr.slot-rule {
   border: none;
   font-family: 'Inter', sans-serif;
   font-weight: 300;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-dim);
@@ -260,7 +260,7 @@ hr.slot-rule {
   margin-bottom: 2.5rem;
 }
 .date-label {
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-dim);
@@ -271,7 +271,7 @@ hr.slot-rule {
   border-bottom: 0.5px solid var(--rule);
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: var(--ink);
   padding: 2px 4px 6px;
   outline: none;
@@ -321,7 +321,7 @@ hr.slot-rule {
       <div class="slot-header">
         <p class="slot-time-label">Morning session</p>
         <h2 class="slot-name">9:00 – 12:30</h2>
-        <p class="slot-time">Morning shift</p>
+        
         <p class="slot-count" id="m-count">0 signed up</p>
       </div>
       <hr class="slot-rule">
@@ -339,7 +339,7 @@ hr.slot-rule {
       <div class="slot-header">
         <p class="slot-time-label">Afternoon session</p>
         <h2 class="slot-name">1:30 – 4:00</h2>
-        <p class="slot-time">Afternoon shift</p>
+        
         <p class="slot-count" id="e-count">0 signed up</p>
       </div>
       <hr class="slot-rule">
