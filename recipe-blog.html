@@ -411,53 +411,6 @@ button:hover .sprig { opacity: 0.6; }
   font-style: italic;
 }
 
-/* ── Collapsible recipes ── */
-.recipe-toggle {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
-  gap: 1rem;
-}
-
-.recipe-toggle .recipe-hero-name {
-  margin-bottom: 0;
-}
-
-.toggle-chevron {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: color 0.2s;
-}
-
-.recipe-toggle:hover .toggle-chevron { color: var(--ink); }
-
-.recipe-collapsible {
-  overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.25s ease;
-  max-height: 2000px;
-  opacity: 1;
-}
-
-.recipe-collapsible.collapsed {
-  max-height: 0;
-  opacity: 0;
-}
-
-.featured-header {
-  margin-bottom: 0.5rem;
-}
-
 /* Past items now just expand inline instead of modal */
 .past-item {
   flex-direction: column;
@@ -666,25 +619,9 @@ function recipeDetails(r) {
 function recipeBlock(r) {
   return `
     <p class="recipe-eyebrow">${fmtDate(r.date)}</p>
-    <div class="featured-header">
-      <button class="recipe-toggle" onclick="toggleFeatured(this)" aria-expanded="true">
-        <h2 class="recipe-hero-name">${r.name}</h2>
-        <span class="toggle-chevron" data-open="hide" data-closed="show">hide</span>
-      </button>
-    </div>
-    <div class="recipe-collapsible" id="featuredBody">
-      ${recipeDetails(r)}
-    </div>
+    <h2 class="recipe-hero-name">${r.name}</h2>
+    ${recipeDetails(r)}
   `;
-}
-
-function toggleFeatured(btn) {
-  const body = document.getElementById('featuredBody');
-  const chevron = btn.querySelector('.toggle-chevron');
-  const isOpen = !body.classList.contains('collapsed');
-  body.classList.toggle('collapsed', isOpen);
-  chevron.textContent = isOpen ? chevron.dataset.closed : chevron.dataset.open;
-  btn.setAttribute('aria-expanded', String(!isOpen));
 }
 
 function togglePast(header, idx) {
