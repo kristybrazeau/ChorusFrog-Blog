@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today's Recipe</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root {
+  --linen:   #FAF7F2;
+  --ink:     #2C3A2E;
+  --ink-mid: #4A5C4C;
+  --ink-dim: #8A9E8C;
+  --sage:    #8FA888;
+  --wheat:   #C9A96E;
+  --rule:    rgba(44,58,46,0.12);
+}
+
+html { font-size: 16px; }
+
+body {
+  background: var(--linen);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ── */
+.page { max-width: 680px; margin: 0 auto; padding: 3.5rem 2rem 6rem; }
+
+/* ── Botanical sprig SVG header ── */
+.site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 3.5rem;
+}
+
+.sprig { display: block; transition: opacity 0.2s; }
+button:hover .sprig { opacity: 0.6; }
+
+.site-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* ── Admin toggle ── */
+
+
+/* ── Admin form ── */
+.admin-form {
+  display: none;
+  border-top: 0.5px solid var(--rule);
+  padding-top: 2rem;
+  margin-bottom: 2.5rem;
+}
+.admin-form.open { display: block; }
+
+.form-field { margin-bottom: 1.25rem; }
+
+.form-field label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 6px;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 0.5px solid var(--rule);
+  border-radius: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.92rem;
+  color: var(--ink);
+  padding: 6px 0 8px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-bottom-color: var(--sage);
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.7;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.post-btn {
+  margin-top: 0.5rem;
+  display: inline-block;
+  background: var(--ink);
+  color: var(--linen);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: none;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.post-btn:hover { background: var(--ink-mid); }
+
+/* ── Featured recipe ── */
+.featured { margin-bottom: 4rem; }
+
+.recipe-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1rem;
+}
+
+.recipe-hero-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 8vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.recipe-meta-line {
+  display: flex;
+  gap: 1.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.meta-piece {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+}
+
+.meta-piece strong {
+  color: var(--ink-mid);
+  font-weight: 400;
+}
+
+/* ── Hairline rule ── */
+.rule { border: none; border-top: 0.5px solid var(--rule); margin: 2.5rem 0; }
+
+/* ── Two-col recipe layout ── */
+.recipe-body {
+  display: grid;
+  grid-template-columns: 1fr 1.65fr;
+  gap: 3rem;
+}
+
+@media (max-width: 540px) {
+  .recipe-body { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+.col-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wheat);
+  margin-bottom: 1.1rem;
+}
+
+.ingredients {
+  list-style: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 1.05rem;
+  line-height: 2;
+  color: var(--ink-mid);
+}
+
+.ingredients li { border-bottom: 0.5px solid var(--rule); padding-bottom: 0.1rem; }
+.ingredients li:last-child { border-bottom: none; }
+
+.steps {
+  list-style: none;
+  counter-reset: s;
+  font-size: 0.88rem;
+  line-height: 1.85;
+  color: var(--ink-mid);
+}
+
+.steps li {
+  counter-increment: s;
+  padding-left: 1.8em;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.steps li::before {
+  content: counter(s);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.82rem;
+  color: var(--wheat);
+  font-weight: 400;
+}
+
+.chef-note {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-left: 1.5px solid var(--sage);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.98rem;
+  color: var(--ink-mid);
+  line-height: 1.7;
+}
+
+.chef-note-label {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sage);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ── Past recipes ── */
+.section-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin-bottom: 1.75rem;
+}
+
+.past-list { list-style: none; }
+
+.past-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 0.5px solid var(--rule);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.past-item:first-child { border-top: 0.5px solid var(--rule); }
+.past-item:hover .past-item-name { color: var(--sage); }
+
+.past-item-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 1.12rem;
+  color: var(--ink);
+  transition: color 0.15s;
+  flex: 1;
+}
+
+.past-item-date {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+/* ── Empty states ── */
+.empty {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink-dim);
+  padding: 1.5rem 0;
+}
+
+/* ── Modal ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(250,247,242,0.92);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  overflow-y: auto;
+  padding: 3rem 2rem 5rem;
+}
+.overlay.open { display: block; }
+
+.modal-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0; right: 0;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  cursor: pointer;
+  padding: 4px 0;
+}
+.modal-close:hover { color: var(--ink); }
+
+/* ── Community submit section ── */
+.submit-section { margin-top: 4rem; }
+
+.submit-toggle {
+  display: block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0;
+  margin: 0;
+  transition: color 0.2s;
+}
+.submit-toggle:hover { color: var(--ink); }
+
+.submit-form {
+  display: none;
+  padding-top: 1.75rem;
+}
+.submit-form.open { display: block; }
+
+.submit-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 1.5rem;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+
+.submit-subhead {
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  margin-bottom: 1.75rem;
+  line-height: 1.6;
+}
+
+.submit-status {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--sage);
+  margin-top: 1rem;
+  min-height: 1.4rem;
+  transition: opacity 0.3s;
+}
+
+/* ── Password gate ── */
+.pw-prompt {
+  display: none;
+  margin-bottom: 1.5rem;
+}
+.pw-prompt.open { display: block; }
+.pw-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 8px;
+}
+.pw-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.9rem;
+  color: var(--ink);
+  padding: 6px 0;
+  outline: none;
+  min-width: 0;
+}
+.pw-input::placeholder { color: var(--ink-dim); font-style: italic; }
+.pw-btn {
+  background: var(--ink);
+  color: var(--linen);
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pw-btn:hover { background: var(--ink-mid); }
+.pw-cancel {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s;
+}
+.pw-cancel:hover { color: var(--ink); }
+.pw-error {
+  font-size: 0.75rem;
+  color: #b05050;
+  margin-top: 6px;
+  min-height: 1rem;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header with frog -->
+  <header class="site-header">
+    <button onclick="promptPassword()" aria-label="Admin" style="background:none;border:none;cursor:pointer;padding:0;display:block;line-height:0;">
+    <svg class="sprig" width="60" height="52" viewBox="0 0 60 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Body -->
+      <ellipse cx="30" cy="34" rx="16" ry="13" stroke="#8FA888" stroke-width="1.1" fill="none"/>
+      <!-- Head bump (top of body merges into head) -->
+      <ellipse cx="30" cy="24" rx="11" ry="8" stroke="#8FA888" stroke-width="1.1" fill="none"/>
+      <!-- Left eye bulge -->
+      <circle cx="22" cy="18" r="4.5" stroke="#8FA888" stroke-width="1" fill="none"/>
+      <circle cx="22" cy="18" r="1.5" fill="#8FA888"/>
+      <!-- Right eye bulge -->
+      <circle cx="38" cy="18" r="4.5" stroke="#8FA888" stroke-width="1" fill="none"/>
+      <circle cx="38" cy="18" r="1.5" fill="#8FA888"/>
+      <!-- Smile -->
+      <path d="M24 28 Q30 32 36 28" stroke="#8FA888" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <!-- Left front leg -->
+      <path d="M15 36 C10 36 7 39 6 42" stroke="#8FA888" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <!-- Left front toes -->
+      <path d="M6 42 C5 40 4 43 3 41" stroke="#8FA888" stroke-width="0.85" stroke-linecap="round" fill="none"/>
+      <path d="M6 42 C6 40 7 43 8 41" stroke="#8FA888" stroke-width="0.85" stroke-linecap="round" fill="none"/>
+      <!-- Right front leg -->
+      <path d="M45 36 C50 36 53 39 54 42" stroke="#8FA888" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <!-- Right front toes -->
+      <path d="M54 42 C53 40 52 43 51 41" stroke="#8FA888" stroke-width="0.85" stroke-linecap="round" fill="none"/>
+      <path d="M54 42 C55 40 56 43 57 41" stroke="#8FA888" stroke-width="0.85" stroke-linecap="round" fill="none"/>
+      <!-- Left back leg -->
+      <path d="M18 45 C14 48 11 50 9 49" stroke="#8FA888" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <!-- Right back leg -->
+      <path d="M42 45 C46 48 49 50 51 49" stroke="#8FA888" stroke-width="1" stroke-linecap="round" fill="none"/>
+    </svg>
+    </button>
+    <span class="site-name">Chorus Frog Farm</span>
+  </header>
+
+  <!-- Password prompt -->
+  <div class="pw-prompt" id="pwPrompt">
+    <div class="pw-row">
+      <input type="password" id="pwInput" class="pw-input" placeholder="password" autocomplete="current-password">
+      <button class="pw-btn" onclick="checkPassword()">Enter</button>
+      <button class="pw-cancel" onclick="cancelPassword()">✕</button>
+    </div>
+    <p class="pw-error" id="pwError"></p>
+  </div>
+
+  <div class="admin-form" id="adminForm">
+    <div class="form-field">
+      <label>Recipe name</label>
+      <input type="text" id="f-name" placeholder="Roasted tomato soup with basil oil">
+    </div>
+    <div class="form-row-2">
+      <div class="form-field">
+        <label>Serves</label>
+        <input type="text" id="f-serves" placeholder="8–10">
+      </div>
+      <div class="form-field">
+        <label>Date</label>
+        <input type="date" id="f-date">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>Ingredients — one per line</label>
+      <textarea id="f-ingredients" placeholder="2 lbs ripe tomatoes&#10;1 large onion&#10;4 cloves garlic&#10;Good olive oil"></textarea>
+    </div>
+    <div class="form-field">
+      <label>Method — one step per line</label>
+      <textarea id="f-steps" placeholder="Halve tomatoes and place cut-side up on a sheet pan.&#10;Drizzle with olive oil, season generously.&#10;Roast at 400°F for 45 minutes until caramelized."></textarea>
+    </div>
+    <div class="form-field">
+      <label>Chef's note (optional)</label>
+      <input type="text" id="f-notes" placeholder="Swirl in a spoonful of cream before serving.">
+    </div>
+    <button class="post-btn" onclick="saveRecipe()">Post to board</button>
+  </div>
+
+  <!-- Featured recipe -->
+  <section class="featured" id="featuredSection">
+    <div id="featuredContent">
+      <p class="empty">Nothing on the board yet — check back soon.</p>
+    </div>
+  </section>
+
+  <!-- Past recipes -->
+  <section id="pastSection" style="display:none;">
+    <hr class="rule">
+    <h2 class="section-heading">Past recipes</h2>
+    <ul class="past-list" id="pastList"></ul>
+  </section>
+
+
+  <!-- Community recipe submission -->
+  <section class="submit-section">
+    <hr class="rule">
+    <button class="submit-toggle" id="submitToggle" onclick="toggleSubmit()">+ share a harvest recipe</button>
+    <div class="submit-form" id="submitForm">
+      <h2 class="submit-heading">Share a harvest recipe</h2>
+      <p class="submit-subhead">Got a recipe that makes the most of what's in season? Share it and we may cook it for the farm.</p>
+      <div class="form-field">
+        <label>Your name</label>
+        <input type="text" id="s-name" placeholder="e.g. Maria">
+      </div>
+      <div class="form-field">
+        <label>Recipe name</label>
+        <input type="text" id="s-recipe" placeholder="e.g. Black bean and sweet potato stew">
+      </div>
+      <div class="form-field">
+        <label>Ingredients — one per line</label>
+        <textarea id="s-ingredients" placeholder="2 cans black beans&#10;1 large sweet potato, cubed&#10;1 tsp cumin"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Method — one step per line</label>
+        <textarea id="s-steps" placeholder="Sauté onion until soft.&#10;Add sweet potato and spices, cook 5 minutes.&#10;Add beans and broth, simmer 20 minutes."></textarea>
+      </div>
+      <div class="form-field">
+        <label>Notes (optional)</label>
+        <input type="text" id="s-notes" placeholder="Great with rice or flatbread.">
+      </div>
+      <button class="post-btn" onclick="submitRecipe()">Send recipe</button>
+      <p class="submit-status" id="submitStatus"></p>
+    </div>
+  </section>
+
+
+</div>
+
+<!-- Modal for past recipes -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="modal-inner" id="modalInner">
+    <button class="modal-close" onclick="closeModal()">close ✕</button>
+    <div id="modalBody" style="padding-top: 2rem;"></div>
+  </div>
+</div>
+
+<script>
+const KEY = 'farmkitchen_recipes_v2';
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+  catch { return []; }
+}
+function persist(data) { localStorage.setItem(KEY, JSON.stringify(data)); }
+
+function fmtDate(str) {
+  if (!str) return '';
+  return new Date(str + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function recipeBlock(r) {
+  const ings = (r.ingredients||'').split('\n').filter(Boolean);
+  const steps = (r.steps||'').split('\n').filter(Boolean);
+  return `
+    <p class="recipe-eyebrow">${fmtDate(r.date)}</p>
+    <h2 class="recipe-hero-name">${r.name}</h2>
+    <div class="recipe-meta-line">
+      ${r.serves ? `<span class="meta-piece">Serves <strong>${r.serves}</strong></span>` : ''}
+    </div>
+    <hr class="rule" style="margin-top:0;">
+    <div class="recipe-body">
+      <div>
+        <p class="col-label">Ingredients</p>
+        <ul class="ingredients">
+          ${ings.map(i => `<li>${i}</li>`).join('')}
+        </ul>
+      </div>
+      <div>
+        <p class="col-label">Method</p>
+        <ol class="steps">
+          ${steps.map(s => `<li>${s}</li>`).join('')}
+        </ol>
+        ${r.notes ? `<div class="chef-note"><span class="chef-note-label">Chef's note</span>${r.notes}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderPage() {
+  const recipes = load();
+  const fc = document.getElementById('featuredContent');
+  const ps = document.getElementById('pastSection');
+  const pl = document.getElementById('pastList');
+
+  if (!recipes.length) {
+    fc.innerHTML = '<p class="empty">Nothing on the board yet — check back soon.</p>';
+    ps.style.display = 'none';
+    return;
+  }
+
+  fc.innerHTML = recipeBlock(recipes[0]);
+
+  const past = recipes.slice(1);
+  if (past.length) {
+    ps.style.display = 'block';
+    pl.innerHTML = past.map((r, i) => `
+      <li class="past-item" onclick="openModal(${i+1})">
+        <span class="past-item-name">${r.name}</span>
+        <span class="past-item-date">${fmtDate(r.date)}</span>
+      </li>
+    `).join('');
+  } else {
+    ps.style.display = 'none';
+  }
+}
+
+// Simple password hash check — change 'YOURPASSWORD' below to your chosen password
+const ADMIN_PASSWORD = 'YOURPASSWORD';
+
+function promptPassword() {
+  if (sessionStorage.getItem('kitchen_unlocked') === '1') {
+    openAdminForm();
+    return;
+  }
+  const pp = document.getElementById('pwPrompt');
+  const isOpen = pp.classList.contains('open');
+  if (isOpen) {
+    cancelPassword();
+  } else {
+    pp.classList.add('open');
+    document.getElementById('pwInput').focus();
+  }
+}
+
+function checkPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem('kitchen_unlocked', '1');
+    document.getElementById('pwPrompt').classList.remove('open');
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwError').textContent = '';
+    openAdminForm();
+  } else {
+    document.getElementById('pwError').textContent = 'Incorrect password.';
+    document.getElementById('pwInput').select();
+  }
+}
+
+function cancelPassword() {
+  document.getElementById('pwPrompt').classList.remove('open');
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').textContent = '';
+}
+
+function openAdminForm() {
+  const f = document.getElementById('adminForm');
+  f.classList.toggle('open');
+}
+
+function toggleAdmin() {
+  openAdminForm();
+}
+
+function saveRecipe() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('Please enter a recipe name.'); return; }
+  const r = {
+    name,
+    serves: document.getElementById('f-serves').value.trim(),
+    date:   document.getElementById('f-date').value,
+    ingredients: document.getElementById('f-ingredients').value.trim(),
+    steps:  document.getElementById('f-steps').value.trim(),
+    notes:  document.getElementById('f-notes').value.trim(),
+  };
+  const recipes = load();
+  recipes.unshift(r);
+  persist(recipes);
+  ['f-name','f-serves','f-date','f-ingredients','f-steps','f-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  toggleAdmin();
+  renderPage();
+}
+
+function openModal(i) {
+  const r = load()[i];
+  if (!r) return;
+  document.getElementById('modalBody').innerHTML = recipeBlock(r);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+
+function maybeClose(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+
+
+const RECIPE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfRv2mmnS4AKFyE3X44ehAAb23lm7TQ0FN_ry1d6wcaS8x0Qw/formResponse';
+
+function toggleSubmit() {
+  const f = document.getElementById('submitForm');
+  f.classList.toggle('open');
+  document.getElementById('submitToggle').textContent =
+    f.classList.contains('open') ? '— never mind' : '+ share a harvest recipe';
+}
+
+function submitRecipe() {
+  const name        = document.getElementById('s-name').value.trim();
+  const recipe      = document.getElementById('s-recipe').value.trim();
+  const ingredients = document.getElementById('s-ingredients').value.trim();
+  const steps       = document.getElementById('s-steps').value.trim();
+  const notes       = document.getElementById('s-notes').value.trim();
+  const status      = document.getElementById('submitStatus');
+
+  if (!name || !recipe || !ingredients || !steps) {
+    status.style.color = '#b05050';
+    status.textContent = 'Please fill in your name, recipe name, ingredients, and method.';
+    return;
+  }
+
+  const body = new FormData();
+  body.append('entry.703796168',  name);
+  body.append('entry.1524127100', recipe);
+  body.append('entry.1782582554', ingredients);
+  body.append('entry.1031336291', steps);
+  body.append('entry.907180346',  notes);
+
+  fetch(RECIPE_FORM_URL, { method: 'POST', mode: 'no-cors', body })
+    .then(() => {
+      status.style.color = 'var(--sage)';
+      status.textContent = 'Thank you — your recipe has been sent!';
+      ['s-name','s-recipe','s-ingredients','s-steps','s-notes'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      setTimeout(() => {
+        toggleSubmit();
+        status.textContent = '';
+      }, 2800);
+    })
+    .catch(() => {
+      status.style.color = '#b05050';
+      status.textContent = 'Something went wrong — please try again.';
+    });
+}
+
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+document.getElementById('f-date').valueAsDate = new Date();
+renderPage();
+</script>
+</body>
+</html>
